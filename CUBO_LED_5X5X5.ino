@@ -10,31 +10,32 @@ int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,3
 //int columnPinA2[25]={53,52,51,50,59,44,39,34,29,30,31,32,33,38,43,48,47,46,45,40,35,36,37,42,41};
 
 void setup() {
-  
-for(int i=0;i<5;i++){
-  pinMode(layerPin[i],OUTPUT);
-}
-for(int i=0;i<25;i++){
-  pinMode(columnPin[i],OUTPUT);
-}
-for(int i=0;i<5;i++){
-  digitalWrite(layerPin[i],HIGH);
-}
-
+  //setando os valores das layer como saida
+  for(int i=0;i<5;i++){
+    pinMode(layerPin[i],OUTPUT);
+  }
+  //setando os valores das colunas como saida
+  for(int i=0;i<25;i++){
+    pinMode(columnPin[i],OUTPUT);
+  }
+  //ativando as 5 colunas
+  for(int i=0;i<5;i++){
+    digitalWrite(layerPin[i],HIGH);
+  }
 }
 
 void loop() {
-  Animation3();
+ Animation4();
 }
 
 void clearPin(){
-  for(int i=0;i<5;i++)
-  {
+  //colocando as layers como LOW
+  for(int i=0;i<5;i++)  {
     digitalWrite(layerPin[i],LOW);
   }
-  for(int i=0;i<25;i++)
-  {
-    digitalWrite(columnPin[i],LOW);
+  //ascendendo os LEDS
+  for(int i=0;i<25;i++)  {
+    digitalWrite(columnPin[i],HIGH);
   }
 }
 
@@ -43,12 +44,13 @@ void Animation1(){
   for(int i=0;i<5;i++){
     digitalWrite(layerPin[i],LOW);
   }
+  //INDO NA DIREÇÃO POSITIVA
   for(int i=0;i<25;i++){
-    digitalWrite(columnPin[i],HIGH);
+    digitalWrite(columnPin[i],HIGH);//LIGA O LED DO FOR
     delay(100);
-    digitalWrite(columnPin[i+1],HIGH);
+    digitalWrite(columnPin[i+1],HIGH);// ASCENDE O PRÓXIMO LED
     delay(100);
-    digitalWrite(columnPin[i],LOW);
+    digitalWrite(columnPin[i],LOW);//APAGA O LED
     delay(100);
   }
   //INVERTER
@@ -64,13 +66,16 @@ void Animation1(){
 }
 
 void Animation2(){
+  // LIGANDO AS 5 COLUNAS
   for(int i=0;i<5;i++){
     digitalWrite(layerPin[i],LOW);
   }
+  //LIGANDO OS LEDS EM SEQUENCIA
   for(int i=0;i<25;i++){
     digitalWrite(columnPin[i],HIGH);
     delay(100);
   }
+  //VOLTANDO DE TRÁS PRA FRENTE
   for(int i=25;i>-1;i--){
     digitalWrite(columnPin[i],LOW);
     delay(100);
@@ -78,19 +83,41 @@ void Animation2(){
 }
 
 void Animation3(){
-  int columnPinA2[25]={53,52,51,50,49,44,39,34,29,30,31,32,33,38,43,48,47,46,45,40,35,36,37,42,41};
+  //Criar coluna nova pro zig zag
+  int columnPinA3[25]={53,52,51,50,49,44,39,34,29,30,31,32,33,38,43,48,47,46,45,40,35,36,37,42,41};
+  //setar nova coluna 
   for(int i=0;i<25;i++){
-    pinMode(columnPinA2[i],OUTPUT);
+    pinMode(columnPinA3[i],OUTPUT);
   }
+  //desativar as layer
   for(int i=0;i<5;i++){
-    digitalWrite(layerPin[i],LOW);
+    digitalWrite(layerPin[i],HIGH);
   }
+  //CHAMANDO A FUNÇÃO ZIG ZAG PARA PODER EXECUTAR O CÓDIGO
+  for (int j=0; j<5;j++){
+    digitalWrite(layerPin[j],LOW);
+    ZIGZAG(columnPinA3);
+    digitalWrite(layerPin[j],HIGH);
+  }
+
+  int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29};
   for(int i=0;i<25;i++){
-    digitalWrite(columnPinA2[i],HIGH);
-    delay(100);
+    pinMode(columnPinA3[i],OUTPUT);
   }
+}
+
+void Animation4(){
+    digitalWrite(layerPin[2],LOW);
+    digitalWrite(columnPin[12],HIGH);
+}
+void ZIGZAG(int columnPinA3[]){
+  for(int i=0;i<25;i++){
+    digitalWrite(columnPinA3[i],HIGH);
+    delay(50);
+  }
+  //voltar na ordem
   for(int i=24;i > -1;i--){
-    digitalWrite(columnPinA2[i],LOW);
-    delay(100);
+    digitalWrite(columnPinA3[i],LOW);
   }
+ 
 }
