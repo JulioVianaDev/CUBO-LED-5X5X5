@@ -1,3 +1,18 @@
+//CONFIGURAÇÕES PARA O DISPLAY LCD
+#include <Wire.h> //Biblioteca utilizada gerenciar a comunicação entre dispositicos através do protocolo I2C
+#include <LiquidCrystal_I2C.h> //Biblioteca controlar display 16x2 através do I2C
+//VARIAVEIS USADAS NO DISPLAY
+#define col  16 //Define o número de colunas do display utilizado
+#define lin   2 //Define o número de linhas do display utilizado
+#define ende  0x27 //Define o endereço do display
+byte btesq=3; // botão decremento (esquerda)
+byte btdir=2; // botão incremento (direita
+int number = 0;
+LiquidCrystal_I2C lcd(ende, col, lin); //Cria o objeto lcd passando como parâmetros o endereço, o nº de colunas e o nº de linhas
+
+
+
+//LAYERS E COLUNAS FISICAS DO ARDUINO
 int layerPin[5]={13,12,11,10,9};
 int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29};
 //layer 0 = cima 
@@ -8,8 +23,22 @@ int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,3
 //coluna 15= 38    coluna 16= 37   coluna 17= 36   coluna 18= 35   coluna 19= 34
 //coluna 20= 33    coluna 21= 32   coluna 22= 31   coluna 23= 30   coluna 24= 29
 //int columnPinA2[25]={53,52,51,50,59,44,39,34,29,30,31,32,33,38,43,48,47,46,45,40,35,36,37,42,41};
-//  
+//  20 SDA 21 SCL no display
 void setup() {
+
+  //SETANDO O ARDUINO PARA OS PINOS DOS BOTÕES
+  lcd.init(); //Inicializa a comunicação com o display já conectado
+  lcd.clear(); //Limpa a tela do display
+  lcd.backlight(); //Aciona a luz de fundo do display
+
+  lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
+  lcd.print("Tomate is top"); //Exibe a mensagem na primeira linha do display
+  lcd.setCursor(0, 1); //Coloca o cursor do display na coluna 1 e linha 2
+  lcd.print("Ass: Tomate");  //Exibe a mensagem na segunda linha do display
+  //PINOS DOS BOTÕES
+  pinMode(btesq, INPUT_PULLUP);
+  pinMode(btdir, INPUT_PULLUP);
+  
   //setando os valores das layer como saida
   for(int i=0;i<5;i++){
     (layerPin[i],OUTPUT);
@@ -18,14 +47,46 @@ void setup() {
   for(int i=0;i<25;i++){
     pinMode(columnPin[i],OUTPUT);
   }
-  //ativando as 5 colunas
+  //ativando as 5 LAYERS
   for(int i=0;i<5;i++){
     digitalWrite(layerPin[i],HIGH);
   }
+
 }
 
 void loop() {
- Animation1();
+  //BOTÕES
+  if (digitalRead(btdir) == 0 ){ // verifica se o botão direito foi acionado     
+    number += 1;    
+    while (digitalRead(btdir) == 0) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
+  }
+
+  if (!digitalRead(btesq)){ // verifica se o esquerdo foi acionado    
+    number -= 1;             
+    while (!digitalRead(btesq)) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
+  }
+  if (number == 1){
+    clearPin();
+    Animation1();
+  }else if (number == 2){
+    clearPin();
+    Animation2();
+  }else if (number == 3){
+    clearPin();
+    Animation3();
+  }else if (number == 4){
+    clearPin();
+    Animation4();
+  }
+  // reseta em caso de estouro (<0 ou >9)
+  if (number < 0) {number = 9;}  
+  if (number > 9) {number = 0;}
+  
+  //delay(1000);
+  //lcd.noDisplay();// Desliga Display:
+  //delay(1000);
+  //lcd.display();// Liga Display:
+  Animation1(); //ANIMAÇÃO DE TESTE
 }
 
 void clearPin(){
@@ -35,7 +96,7 @@ void clearPin(){
   }
   //ascendendo os LEDS
   for(int i=0;i<25;i++)  {
-    digitalWrite(columnPin[i],HIGH);
+    digitalWrite(columnPin[i],LOW);
   }
 }
 
