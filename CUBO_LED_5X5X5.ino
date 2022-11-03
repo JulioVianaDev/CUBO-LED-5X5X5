@@ -12,7 +12,7 @@ int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,3
 void setup() {
   //setando os valores das layer como saida
   for(int i=0;i<5;i++){
-    pinMode(layerPin[i],OUTPUT);
+    (layerPin[i],OUTPUT);
   }
   //setando os valores das colunas como saida
   for(int i=0;i<25;i++){
@@ -25,7 +25,7 @@ void setup() {
 }
 
 void loop() {
- Animation4();
+ Animation1();
 }
 
 void clearPin(){
@@ -146,6 +146,47 @@ void Animation4(){
   digitalWrite(layerPin[2],HIGH);
   digitalWrite(columnPin[7],LOW);
   delay(300);
+}
+
+void Animation5(){
+  for(int i=0;i<5;i++)  {
+    digitalWrite(layerPin[i],HIGH);
+  }
+  for(int i=0;i<25;i++)  {
+    digitalWrite(columnPin[i],HIGH);
+  }
+  delay(400);
+  digitalWrite(layerPin[4],LOW);
+  delay(400);
+  digitalWrite(layerPin[0],LOW);
+  delay(400);
+  digitalWrite(layerPin[3],LOW);
+  delay(400);
+  digitalWrite(layerPin[1],LOW);
+  delay(400);
+  digitalWrite(layerPin[2],LOW);
+  delay(400);
+  //ascendendo os LEDS
+}
+
+void Animation6(){
+  for(int i=0;i<5;i++)  {
+    digitalWrite(layerPin[i],HIGH);
+  }
+  for(int i=0;i<25;i++)  {
+    digitalWrite(columnPin[i],LOW);
+  }
+}
+
+void AcenderUnico(int ledColumn,int ledLayer){
+  for(int i=0;i<5;i++)  {
+    digitalWrite(layerPin[i],HIGH);
+  }
+  for(int i=0;i<25;i++)  {
+    digitalWrite(columnPin[i],LOW);
+  }
+  digitalWrite(columnPin[ledColumn],HIGH);
+  digitalWrite(layerPin[ledLayer],LOW);
 }
 void ZIGZAG(int columnPinA3[]){
   for(int i=0;i<25;i++){
