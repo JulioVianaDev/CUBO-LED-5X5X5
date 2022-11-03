@@ -7,7 +7,7 @@
 #define ende  0x27 //Define o endereço do display
 byte btesq=3; // botão decremento (esquerda)
 byte btdir=2; // botão incremento (direita
-int number = 0;
+int number = 0; // numero da animação
 LiquidCrystal_I2C lcd(ende, col, lin); //Cria o objeto lcd passando como parâmetros o endereço, o nº de colunas e o nº de linhas
 
 
@@ -36,8 +36,8 @@ void setup() {
   lcd.setCursor(0, 1); //Coloca o cursor do display na coluna 1 e linha 2
   lcd.print("Ass: Tomate");  //Exibe a mensagem na segunda linha do display
   //PINOS DOS BOTÕES
-  pinMode(btesq, INPUT_PULLUP);
-  pinMode(btdir, INPUT_PULLUP);
+  pinMode(btesq, INPUT_PULLUP); // modo do botão esquerdo 
+  pinMode(btdir, INPUT_PULLUP); //modo do botão direito
   
   //setando os valores das layer como saida
   for(int i=0;i<5;i++){
@@ -86,7 +86,6 @@ void loop() {
   //lcd.noDisplay();// Desliga Display:
   //delay(1000);
   //lcd.display();// Liga Display:
-  Animation1(); //ANIMAÇÃO DE TESTE
 }
 
 void clearPin(){
@@ -258,5 +257,4 @@ void ZIGZAG(int columnPinA3[]){
   for(int i=24;i > -1;i--){
     digitalWrite(columnPinA3[i],LOW);
   }
- 
 }
