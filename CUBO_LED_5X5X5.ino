@@ -1,134 +1,122 @@
-//CONFIGURAÇÕES PARA O DISPLAY LCD
+//BIBLIOTECAS PARA O LCD
 #include <Wire.h> //Biblioteca utilizada gerenciar a comunicação entre dispositicos através do protocolo I2C
 #include <LiquidCrystal_I2C.h> //Biblioteca controlar display 16x2 através do I2C
-//VARIAVEIS USADAS NO DISPLAY
+//INFORMAÇÕES PARA USAR O I2C NO MEGA 
 #define col  16 //Define o número de colunas do display utilizado
 #define lin   2 //Define o número de linhas do display utilizado
 #define ende  0x27 //Define o endereço do display
-byte btesq=3; // botão decremento (esquerda)
-byte btdir=2; // botão incremento (direita
-int number = 0; // numero da animação
+byte btSubir=3; // botão decremento (esquerda)
+byte btDescer=2; // botão incremento (direita
+int number = 0;
+int numberR = 0;
 LiquidCrystal_I2C lcd(ende, col, lin); //Cria o objeto lcd passando como parâmetros o endereço, o nº de colunas e o nº de linhas
 
-
-
-//LAYERS E COLUNAS FISICAS DO ARDUINO
-int layerPin[5]={13,12,11,10,9};
+//#define  transistor1  13
+//#define  transistor2  12
+//#define  transistor3  11
+//#define  transistor4  10
+//#define  transistor5  9
 int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29};
-//layer 0 = cima 
-//layer 4 = ultima de baixo
-//coluna 00= 53    coluna 01= 52   coluna 02= 51   coluna 03= 50   coluna 04= 49
-//coluna 05= 48    coluna 06= 47   coluna 07= 46   coluna 08= 45   coluna 09= 44
-//coluna 10= 43    coluna 11= 42   coluna 12= 41   coluna 13= 40   coluna 14= 39
-//coluna 15= 38    coluna 16= 37   coluna 17= 36   coluna 18= 35   coluna 19= 34
-//coluna 20= 33    coluna 21= 32   coluna 22= 31   coluna 23= 30   coluna 24= 29
-//int columnPinA2[25]={53,52,51,50,59,44,39,34,29,30,31,32,33,38,43,48,47,46,45,40,35,36,37,42,41};
-//  20 SDA 21 SCL no display
+int layerPin[5]={13,12,11,10,9};
 void setup() {
-
-  //SETANDO O ARDUINO PARA OS PINOS DOS BOTÕES
   lcd.init(); //Inicializa a comunicação com o display já conectado
   lcd.clear(); //Limpa a tela do display
   lcd.backlight(); //Aciona a luz de fundo do display
-
   lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
-  lcd.print("Tomate is top"); //Exibe a mensagem na primeira linha do display
+  lcd.print("Bora animar?"); //Exibe a mensagem na primeira linha do display
   lcd.setCursor(0, 1); //Coloca o cursor do display na coluna 1 e linha 2
   lcd.print("Ass: Tomate");  //Exibe a mensagem na segunda linha do display
-  //PINOS DOS BOTÕES
-  pinMode(btesq, INPUT_PULLUP); // modo do botão esquerdo 
-  pinMode(btdir, INPUT_PULLUP); //modo do botão direito
-  
-  //setando os valores das layer como saida
+  //LEDS
   for(int i=0;i<5;i++){
     (layerPin[i],OUTPUT);
   }
-  //setando os valores das colunas como saida
+  for(int i=0;i<5;i++){
+    pinMode(layerPin[i],OUTPUT);
+  }
   for(int i=0;i<25;i++){
     pinMode(columnPin[i],OUTPUT);
   }
-  //ativando as 5 LAYERS
-  for(int i=0;i<5;i++){
-    digitalWrite(layerPin[i],HIGH);
-  }
-
+  
+  pinMode(btSubir, INPUT_PULLUP);
+  pinMode(btDescer, INPUT_PULLUP);
 }
-
 void loop() {
-  //BOTÕES
-  if (digitalRead(btdir) == 0 ){ // verifica se o botão direito foi acionado     
+  Gota();
+  if (digitalRead(btSubir) == 0 ){ // verifica se o botão direito foi acionado     
     number += 1;    
-    while (digitalRead(btdir) == 0) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
+    while (digitalRead(btSubir) == 0) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
   }
 
-  if (!digitalRead(btesq)){ // verifica se o esquerdo foi acionado    
+  if (!digitalRead(btDescer)){ // verifica se o esquerdo foi acionado    
     number -= 1;             
-    while (!digitalRead(btesq)) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
+    while (!digitalRead(btDescer)) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
   }
   if (number == 1){
-    clearPin();
+    lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
+    lcd.print("Animation 1"); //Exibe a mensagem na primeira linha do display
     Animation1();
   }else if (number == 2){
-    clearPin();
+    lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
+    lcd.print("Animation 2"); //Exibe a mensagem na primeira linha do display
     Animation2();
   }else if (number == 3){
-    clearPin();
+    lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
+    lcd.print("Animation 3"); //Exibe a mensagem na primeira linha do display
     Animation3();
   }else if (number == 4){
-    clearPin();
+    lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
+    lcd.print("Animation 4"); //Exibe a mensagem na primeira linha do display
     Animation4();
   }
   // reseta em caso de estouro (<0 ou >9)
-  if (number < 0) {number = 9;}  
-  if (number > 9) {number = 0;}
+  if (number < 0) {number = 8;}  
+  if (number > 8) {number = 0;}
   
-  //delay(1000);
-  //lcd.noDisplay();// Desliga Display:
-  //delay(1000);
-  //lcd.display();// Liga Display:
 }
 
-void clearPin(){
-  //colocando as layers como LOW
-  for(int i=0;i<5;i++)  {
-    digitalWrite(layerPin[i],LOW);
+void Animation0(){
+  ResetarColunas();
+  for(int i=0;i<25;i++){
+    digitalWrite(columnPin[i],HIGH);
   }
-  //ascendendo os LEDS
-  for(int i=0;i<25;i++)  {
-    digitalWrite(columnPin[i],LOW);
+  delay(100);
+  for(int i=0;i<5;i++){
+    digitalWrite(layerPin[i],HIGH);
   }
-}
-
-void Animation1(){
-  //apagar todos
+  delay(100);
   for(int i=0;i<5;i++){
     digitalWrite(layerPin[i],LOW);
   }
-  //INDO NA DIREÇÃO POSITIVA
+  delay(100);
+  
+}
+void Animation1(){
+  ResetarColunas();
+  for(int i=0;i<5;i++){
+    digitalWrite(layerPin[i],HIGH);
+  }
   for(int i=0;i<25;i++){
     digitalWrite(columnPin[i],HIGH);//LIGA O LED DO FOR
-    delay(100);
+    delay(50);
     digitalWrite(columnPin[i+1],HIGH);// ASCENDE O PRÓXIMO LED
-    delay(100);
+    delay(50);
     digitalWrite(columnPin[i],LOW);//APAGA O LED
-    delay(100);
+    delay(50);
   }
-  //INVERTER
-  for(int i=25;i>-1;i--){
+  for(int i=24;i>-1;i--){
     digitalWrite(columnPin[i],HIGH);
-    delay(100);
+    delay(50);
     digitalWrite(columnPin[i-1],HIGH);
-    delay(100);
+    delay(50);
     digitalWrite(columnPin[i],LOW);
-    delay(100);
+    delay(50);
   }
-  
 }
 
 void Animation2(){
   // LIGANDO AS 5 COLUNAS
   for(int i=0;i<5;i++){
-    digitalWrite(layerPin[i],LOW);
+    digitalWrite(layerPin[i],HIGH);
   }
   //LIGANDO OS LEDS EM SEQUENCIA
   for(int i=0;i<25;i++){
@@ -136,12 +124,11 @@ void Animation2(){
     delay(100);
   }
   //VOLTANDO DE TRÁS PRA FRENTE
-  for(int i=25;i>-1;i--){
+  for(int i=24;i>-1;i--){
     digitalWrite(columnPin[i],LOW);
     delay(100);
   }
 }
-
 void Animation3(){
   //Criar coluna nova pro zig zag
   int columnPinA3[25]={53,52,51,50,49,44,39,34,29,30,31,32,33,38,43,48,47,46,45,40,35,36,37,42,41};
@@ -151,24 +138,18 @@ void Animation3(){
   }
   //desativar as layer
   for(int i=0;i<5;i++){
-    digitalWrite(layerPin[i],HIGH);
+    digitalWrite(layerPin[i],LOW);
   }
   //CHAMANDO A FUNÇÃO ZIG ZAG PARA PODER EXECUTAR O CÓDIGO
   for (int j=0; j<5;j++){
-    digitalWrite(layerPin[j],LOW);
-    ZIGZAG(columnPinA3);
     digitalWrite(layerPin[j],HIGH);
-  }
-
-  int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29};
-  for(int i=0;i<25;i++){
-    pinMode(columnPinA3[i],OUTPUT);
+    ZIGZAG(columnPinA3);
+    digitalWrite(layerPin[j],LOW);
   }
 }
-
 void Animation4(){
   //acender o miolo
-  digitalWrite(layerPin[2],LOW);
+  digitalWrite(layerPin[2],HIGH);
   digitalWrite(columnPin[12],HIGH);
   delay(300);
   //acender os 3 do meio
@@ -176,19 +157,19 @@ void Animation4(){
   for(int i=0;i<10;i++){
     digitalWrite(columnPin[colunas3[i]],HIGH);   
   }
-  digitalWrite(layerPin[1],LOW);
-  digitalWrite(layerPin[3],LOW);
+  digitalWrite(layerPin[1],HIGH);
+  digitalWrite(layerPin[3],HIGH);
   //acender tudo
   delay(300);
   for(int i=0;i<25;i++){
     digitalWrite(columnPin[i],HIGH);
   }
-  digitalWrite(layerPin[0],LOW);
-  digitalWrite(layerPin[4],LOW);
-  delay(300);
-  //reverter a partir de agora
   digitalWrite(layerPin[0],HIGH);
   digitalWrite(layerPin[4],HIGH);
+  delay(300);
+  //reverter a partir de agora
+  digitalWrite(layerPin[0],LOW);
+  digitalWrite(layerPin[4],LOW);
   int colunas5Apagar[16]={0,1,2,3,4,9,14,19,24,23,22,21,20,15,10,5};
   for(int i=0;i<16;i++){
     digitalWrite(columnPin[colunas5Apagar[i]],LOW);
@@ -196,35 +177,35 @@ void Animation4(){
   delay(300);
   //reverter os 3
   int colunas3Apagar[8]={6,7,8,13,18,17,16,11};
-  digitalWrite(layerPin[1],HIGH);
-  digitalWrite(layerPin[3],HIGH);
+  digitalWrite(layerPin[1],LOW);
+  digitalWrite(layerPin[3],LOW);
   for(int i=0;i<8;i++){
     digitalWrite(columnPin[colunas3Apagar[i]],LOW);
   }
   delay(300);
   //apagar o que sobrou
-  digitalWrite(layerPin[2],HIGH);
+  digitalWrite(layerPin[2],LOW);
   digitalWrite(columnPin[7],LOW);
   delay(300);
 }
 
 void Animation5(){
   for(int i=0;i<5;i++)  {
-    digitalWrite(layerPin[i],HIGH);
+    digitalWrite(layerPin[i],LOW);
   }
   for(int i=0;i<25;i++)  {
     digitalWrite(columnPin[i],HIGH);
   }
   delay(400);
-  digitalWrite(layerPin[4],LOW);
+  digitalWrite(layerPin[4],HIGH);
   delay(400);
-  digitalWrite(layerPin[0],LOW);
+  digitalWrite(layerPin[0],HIGH);
   delay(400);
-  digitalWrite(layerPin[3],LOW);
+  digitalWrite(layerPin[3],HIGH);
   delay(400);
-  digitalWrite(layerPin[1],LOW);
+  digitalWrite(layerPin[1],HIGH);
   delay(400);
-  digitalWrite(layerPin[2],LOW);
+  digitalWrite(layerPin[2],HIGH);
   delay(400);
   //ascendendo os LEDS
 }
@@ -234,19 +215,51 @@ void Animation6(){
     digitalWrite(layerPin[i],HIGH);
   }
   for(int i=0;i<25;i++)  {
-    digitalWrite(columnPin[i],LOW);
+    digitalWrite(columnPin[i],HIGH);
   }
 }
-
-void AcenderUnico(int ledColumn,int ledLayer){
-  for(int i=0;i<5;i++)  {
-    digitalWrite(layerPin[i],HIGH);
+void Animation7(){
+  int randomColumn = random(25);
+  int randomLayer = random(5);
+  AcenderUnico(randomColumn,randomLayer);
+  delay(5);
+  ApagarUnico(randomColumn,randomLayer);
+  delay(5);
+}
+void Animation8(){
+  //parte 1 
+  AcenderUnico(0,0);
+  delay(300);
+  //parte 2
+  digitalWrite(columnPin[1],HIGH);
+  digitalWrite(columnPin[5],HIGH);
+  digitalWrite(columnPin[6],HIGH);
+  digitalWrite(layerPin[1],HIGH);
+  delay(300);
+  //parte 3
+  digitalWrite(layerPin[2],HIGH);
+  digitalWrite(columnPin[2],HIGH);
+  digitalWrite(columnPin[7],HIGH);
+  digitalWrite(columnPin[12],HIGH);
+  digitalWrite(columnPin[11],HIGH);
+  digitalWrite(columnPin[10],HIGH);
+  delay(300);
+  //parte 4
+  digitalWrite(layerPin[3],HIGH);
+  digitalWrite(columnPin[3],HIGH);
+  digitalWrite(columnPin[8],HIGH);
+  digitalWrite(columnPin[13],HIGH);
+  digitalWrite(columnPin[18],HIGH);
+  digitalWrite(columnPin[17],HIGH);
+  digitalWrite(columnPin[16],HIGH);
+  digitalWrite(columnPin[15],HIGH);
+  delay(300);
+  digitalWrite(layerPin[4],HIGH);  
+  for(int i=24;i>=0;i--){
+    digitalWrite(columnPin[i],HIGH);
   }
-  for(int i=0;i<25;i++)  {
-    digitalWrite(columnPin[i],LOW);
-  }
-  digitalWrite(columnPin[ledColumn],HIGH);
-  digitalWrite(layerPin[ledLayer],LOW);
+  delay(300);
+  Limpar();
 }
 void ZIGZAG(int columnPinA3[]){
   for(int i=0;i<25;i++){
@@ -254,7 +267,43 @@ void ZIGZAG(int columnPinA3[]){
     delay(50);
   }
   //voltar na ordem
-  for(int i=24;i > -1;i--){
+  for(int i=24;i>=0;i--){
     digitalWrite(columnPinA3[i],LOW);
   }
+}
+void ResetarColunas(){
+  int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29};
+  for(int i=0;i<25;i++){
+    pinMode(columnPin[i],OUTPUT);
+  }
+}
+void Limpar(){
+  for(int i=0;i<5;i++)  {
+    digitalWrite(layerPin[i],LOW);
+  }
+  for(int i=0;i<25;i++)  {
+    digitalWrite(columnPin[i],LOW);
+  }
+}
+void Gota(){
+  Limpar();
+  int randomColumn = random(0,24);
+  int randomLayer = 0;
+  
+  while(randomLayer < 5){
+    digitalWrite(columnPin[randomColumn],HIGH);
+    digitalWrite(layerPin[randomLayer],HIGH);
+    digitalWrite(layerPin[randomLayer - 1],LOW);
+    delay(300);
+    randomLayer++;
+  }
+  
+}
+void AcenderUnico(int ledColumn,int ledLayer){
+  digitalWrite(columnPin[ledColumn],HIGH);
+  digitalWrite(layerPin[ledLayer],HIGH);
+}
+void ApagarUnico(int ledColumn,int ledLayer){
+  digitalWrite(columnPin[ledColumn],LOW);
+  digitalWrite(layerPin[ledLayer],LOW);
 }
