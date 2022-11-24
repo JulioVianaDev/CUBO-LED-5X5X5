@@ -41,7 +41,7 @@ void setup() {
   pinMode(btDescer, INPUT_PULLUP);
 }
 void loop() {
-  Gota();
+  Animation3();
   if (digitalRead(btSubir) == 0 ){ // verifica se o botão direito foi acionado     
     number += 1;    
     while (digitalRead(btSubir) == 0) {} // loop vazio - aguarda soltar o botão (evita a númeração constante
@@ -264,7 +264,7 @@ void Animation8(){
 void ZIGZAG(int columnPinA3[]){
   for(int i=0;i<25;i++){
     digitalWrite(columnPinA3[i],HIGH);
-    delay(50);
+    delay(20);
   }
   //voltar na ordem
   for(int i=24;i>=0;i--){
