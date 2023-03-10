@@ -1,11 +1,17 @@
 void Animation4(){
+  lcd.setCursor(0, 0); //Coloca o cursor do display na coluna 1 e linha 1
+  lcd.print("Animation 4"); //Exibe a mensagem na primeira linha do display
+  lcd.setCursor(0, 1); //Coloca o cursor do display na coluna 1 e linha 2
+  lcd.print("Ass: Tomate");  //Exibe a mensagem na segunda linha do display
+  int columnPin[25]={53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29};
+  int layerPin[5]={13,12,11,10,9};
   //acender o miolo
   digitalWrite(layerPin[2],HIGH);
   digitalWrite(columnPin[12],HIGH);
   delay(300);
   //acender os 3 do meio
-  int colunas3[9]={13,12,11,17,16,18,8,7,6};
-  for(int i=0;i<10;i++){
+  int colunas3[8]={13,11,17,16,18,8,7,6};
+  for(int i=0;i<9;i++){
     digitalWrite(columnPin[colunas3[i]],HIGH);   
   }
   digitalWrite(layerPin[1],HIGH);

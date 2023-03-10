@@ -9,8 +9,12 @@ byte btSubir=3; // botão decremento (esquerda)
 byte btDescer=2; // botão incremento (direita
 int number = 0;
 int numberR = 0;
-LiquidCrystal_I2C lcd(ende, col, lin); //Cria o objeto lcd passando como parâmetros o endereço, o nº de colunas e o nº de linhas
 
+
+LiquidCrystal_I2C lcd(ende, col, lin); //Cria o objeto lcd passando como parâmetros o endereço, o nº de colunas e o nº de linhas
+const long onDuration = 1000;
+long rememberTime=0;
+int LEDState =HIGH;
 //#define  transistor1  13
 //#define  transistor2  12
 //#define  transistor3  11
